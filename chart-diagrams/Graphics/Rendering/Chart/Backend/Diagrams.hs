@@ -52,7 +52,7 @@ import qualified Data.Set as S
 import qualified Data.ByteString.Lazy as BS
 import qualified Data.Text as T
 
-import Control.Lens(makeLenses)
+import Control.Lens(makeLenses, (^.), from)
 import Control.Monad.Operational
 import Control.Monad.State.Lazy
 
@@ -62,7 +62,7 @@ import Diagrams.Prelude
   , R2, P2, T2
   , r2, p2, unr2, unp2
   , Trail(..), Segment
-  , Rad(..), CircleFrac(..)
+  , Angle, rad
   , (.+^), (<->), (~~)
   )
 import qualified Diagrams.Prelude as D
@@ -735,12 +735,12 @@ pathToTrail' closeAll (LineTo p1 path) p0 =
 pathToTrail' closeAll (Arc p0 r s e path) _ = 
   let endP = translateP (pointToVec p0) $ rotateP e $ Point r 0
       (t, c, rest) = pathToTrail' closeAll path endP
-      arcTrail = D2.scale r $ D2.arc (Rad s) (Rad e)
+      arcTrail = D2.scale r $ D2.arc (s^.from rad) (e^.from rad)
   in ( arcTrail <> t, c || closeAll, rest )
 pathToTrail' closeAll (ArcNeg p0 r s e path) _ = 
   let endP = translateP (pointToVec p0) $ rotateP e $ Point r 0
       (t, c, rest) = pathToTrail' closeAll path endP
-      arcTrail = D2.scale r $ D2.arcCW (Rad s) (Rad e)
+      arcTrail = D2.scale r $ D2.arcCW (s^.from rad) (e^.from rad)
   in ( arcTrail <> t, c || closeAll, rest )
 pathToTrail' closeAll End _ = (mempty, False || closeAll, Nothing)
 pathToTrail' closeAll Close _ = (mempty, True || closeAll, Nothing)
