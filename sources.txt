@@ -1,0 +1,7 @@
+-- for cabal-meta
+./chart
+./chart-cairo
+./chart-diagrams
+./chart-gtk
+./chart-simple
+-- ./chart-tests
